@@ -8,5 +8,10 @@ Per a crear l'entorn Docker, s'ha utilitzat el fitxer `docker-compose.yaml` on s
 
 ## 1. Restaurar dades MongoDB
 Copiarem el fitxer de backup de MongoDB que hem fet anteriorment i el guardarem en el directori `tmp` del container de MongoDB.
+
 ![alt text](Imagenes/CopiaBackupDocker.png)
+
+Un cop tenim el fitxer de backup en el directori `tmp`, podem restaurar les dades a la base de dades.
+
+![alt text](Imagenes/RestauracioDades.png)
 
