@@ -5,8 +5,8 @@ Aquest projecte té com a objectiu descobrir patrons ocults i tipologies de juga
 El projecte s'ha desenvolupat com a part del mòdul de Sistemes d'Aprenentatge Automàtic a l'Institut Sa Palomera (Curs 2025-2026).
 
 ## 👥 Equip
-* **Isaac Ruiz**
 * **Pau Miró**
+* **Isaac Ruiz**
 
 ---
 

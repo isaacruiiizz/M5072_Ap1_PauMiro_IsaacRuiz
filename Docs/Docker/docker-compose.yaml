@@ -1,0 +1,14 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb_feb_project
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=feb_db
+
+volumes:
+  mongo_data:

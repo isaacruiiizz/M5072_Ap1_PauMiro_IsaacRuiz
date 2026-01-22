@@ -1,0 +1,14 @@
+# Manipulació de dades
+pandas
+numpy
+
+# Connexió a Base de Dades (MongoDB)
+pymongo
+dnspython
+
+# Machine Learning (K-Means, DBSCAN, Mètriques)
+scikit-learn
+
+# Visualització de dades
+matplotlib
+seaborn
