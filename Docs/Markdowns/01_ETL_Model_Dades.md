@@ -15,3 +15,8 @@ Un cop tenim el fitxer de backup en el directori `tmp`, podem restaurar les dade
 
 ![alt text](Imagenes/RestauracioDades.png)
 
+## 2. Connectivitat MongoDB amb Python
+Abans de connectar-nos a la base de dades, hem de instal·lar les llibreries necessàries. Per fer-ho tot més senzill, hem utilitzat el fitxer `requirements.txt` amb les llibreries que utilitzarem durant el procés.
+
+![alt text](Imagenes/Part1/InstalacioLlibreries.png)
+
