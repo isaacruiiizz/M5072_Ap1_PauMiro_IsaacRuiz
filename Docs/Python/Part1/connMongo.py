@@ -11,14 +11,9 @@ def get_db_connection():
     DB_NAME = "feb_db"
 
     try:
-        print(f"🔌 Connectant a {MONGO_HOST}:{MONGO_PORT}...")
         client = pymongo.MongoClient(host=MONGO_HOST, port=MONGO_PORT, serverSelectionTimeoutMS=5000)
         client.server_info()
         db = client[DB_NAME]
-        print(f"✅ Connectat a '{DB_NAME}'")
         return db
     except Exception as e:
-        print(f"❌ Error de connexió: {e}")
-        sys.exit(1)
-
-get_db_connection()
+        print(f"Error de connexió: {e}")
