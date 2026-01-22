@@ -1,0 +1,11 @@
+# Ignorar backups de base de dades
+*.archive
+*.gz
+*.json
+mongodump/
+dump/
+
+# Ignorar fitxers de sistema o entorns virtuals
+__pycache__/
+.env
+.venv/
