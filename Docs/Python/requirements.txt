@@ -12,3 +12,6 @@ scikit-learn
 # Visualització de dades
 matplotlib
 seaborn
+
+# Variables d'entorn
+python-dotenv
