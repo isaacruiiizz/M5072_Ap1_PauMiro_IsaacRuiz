@@ -143,5 +143,5 @@ L'execució de l'script mostra la connexió correcta, la descàrrega de més de 
 
 Finalment, validem al Portal d'Azure que els fitxers `feb_raw_shots.csv` i `feb_raw_statistics.csv` s'han creat correctament dins el contenidor `01-bronze`.
 
-![Validació al Portal Azure](Imagenes/Part1/AzureBronzeResult.png)
+![Validació al Portal Azure](Imagenes/Part1/AzureBronzeResults.png)
 
