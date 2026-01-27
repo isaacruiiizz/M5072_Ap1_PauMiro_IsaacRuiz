@@ -15,3 +15,6 @@ seaborn
 
 # Variables d'entorn
 python-dotenv
+
+# Azure Blob Storage
+azure-storage-blob
