@@ -6,7 +6,7 @@ En aquesta fase inicial, l'objectiu és transformar les dades "crues" de MongoDB
 ## 0. Desplegament de la Infraestructura (Docker)
 Per garantir la reproductibilitat de l'entorn i l'aïllament del servei de base de dades, hem implementat una arquitectura contenidoritzada utilitzant **Docker Compose**.
 
-S'ha configurat el servei `mongodb` al fitxer `docker-compose.yaml`, definint:
+S'ha configurat el servei `mongodb` al fitxer `[docker-compose.yaml](../Docker/docker-compose.yaml)`, definint:
 * **Imatge:** `mongo:latest` per disposar de l'última versió estable.
 * **Persistència:** Configuració de **Volums** (`mongo_data`) per assegurar que les dades sobrevisquin al reinici del contenidor.
 * **Mapeig de Ports:** Exposició del port `27017` per permetre la connexió des del nostre entorn de desenvolupament local (Python).
@@ -28,12 +28,12 @@ Un cop l'arxiu és accessible pel contenidor, hem executat la utilitat `mongores
 Per interactuar programàticament amb la base de dades, hem establert un entorn de desenvolupament en Python basat en la gestió estricta de dependències i la modularitat del codi.
 
 **Gestió de Dependències**
-S'ha utilitzat un fitxer `requirements.txt` per definir i instal·lar les llibreries necessàries (`pymongo`, `pandas`, `azure-storage-blob`, `python-dotenv`), assegurant que tots els membres de l'equip treballin amb les mateixes versions.
+S'ha utilitzat un fitxer `[requirements.txt](../Python/requirements.txt)` per definir i instal·lar les llibreries necessàries (`pymongo`, `pandas`, `azure-storage-blob`, `python-dotenv`), assegurant que tots els membres de l'equip treballin amb les mateixes versions.
 
 ![Exemple d'instal·lació de llibreries](Imagenes/Part1/InstalacioLlibreries.png)
 
 **Mòdul de Connexió (Modularització)**
-Per evitar la duplicació de codi i millorar la seguretat, hem encapsulat la lògica de connexió en el mòdul `connMongo.py`. Aquest script implementa el patró **Singleton** per gestionar la connexió i carrega dinàmicament les variables d'entorn (IP, Port) segons si s'executa en local o via VPN (Tailscale).
+Per evitar la duplicació de codi i millorar la seguretat, hem encapsulat la lògica de connexió en el mòdul [Codi Font: connMongo.py](../Python/Part1/connMongo.py). Aquest script implementa el patró **Singleton** per gestionar la connexió i carrega dinàmicament les variables d'entorn (IP, Port) segons si s'executa en local o via VPN (Tailscale).
 
 A continuació, es mostra la validació de la connexió recuperant els primers registres de la col·lecció d'estadístiques:
 
