@@ -134,7 +134,7 @@ L'script s'ha dissenyat per ser eficient i no ocupar espai al disc local:
 
 Podeu consultar el codi font complet a l'enllaç següent:
 
-**[Codi Font: extraccioDades.py](../../Python/Part1/extraccioDades.py)**
+**[Codi Font: extraccioDades.py](../Python/Part1/extraccioDades.py)**
 
 #### 5.2. Execució i Validació
 L'execució de l'script mostra la connexió correcta, la descàrrega de més de 200.000 registres i la pujada exitosa al núvol.
