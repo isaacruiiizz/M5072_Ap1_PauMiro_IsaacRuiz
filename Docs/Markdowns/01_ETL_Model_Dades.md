@@ -198,7 +198,7 @@ Per materialitzar l'estratègia definida, hem desenvolupat i executat l'script `
 
 Podeu consultar el codi font complet a l'enllaç següent:
 
-**[📄 Codi Font: transformacioDades.py](../Python/Part1/transformacioDades.py)**
+**[Codi Font: transformacioDades.py](../Python/Part1/transformacioDades.py)**
 
 #### A. Execució de l'Script
 En executar el codi, el sistema processa les col·leccions d'estadístiques i tirs. Com es pot veure a la sortida del terminal, el filtre de qualitat actua correctament, reduint el nombre de registres per quedar-nos només amb els jugadors rellevants (>50 minuts).
