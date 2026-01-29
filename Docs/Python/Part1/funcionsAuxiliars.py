@@ -10,6 +10,7 @@ load_dotenv()
 def get_blob_client(container, filename):
     connect_str = os.getenv('AZURE_CONNECTION_STRING')
     blob_service_client = BlobServiceClient.from_connection_string(connect_str)
+    blob_service_client.defaults = {"connection_timeout": 300, "read_timeout": 300}
     return blob_service_client.get_blob_client(container=container, blob=filename)
 
 def read_csv_from_azure(container, filename):
@@ -49,8 +50,14 @@ def read_csv_from_azure(container, filename):
 def upload_csv_to_azure(df, container, filename):
     output = StringIO()
     df.to_csv(output, index=False)
-    print(f"Pujant '{filename}' a {container} ({len(df)} files)...")
+    data = output.getvalue()
     
-    blob_client = get_blob_client(container, filename)
-    blob_client.upload_blob(output.getvalue(), overwrite=True)
-    print("Càrrega completada")
+    size_mb = len(data) / 1024 / 1024
+    print(f"Mida del fitxer {filename}: {size_mb:.2f} MB")
+    print(f"Pujant '{filename}' a {container} ({len(df)} files)...")
+    try:
+        blob_client = get_blob_client(container, filename)
+        blob_client.upload_blob(output.getvalue(), overwrite=True)
+        print("Càrrega completada")
+    except Exception as e:
+        print(f"Error durant la càrrega: {e}")

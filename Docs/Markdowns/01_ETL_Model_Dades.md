@@ -219,4 +219,37 @@ Finalment, realitzem una inspecció del contingut del fitxer generat per validar
 
 ![Vista prèvia del dataset Silver net](Imagenes/Part1/SilverContentPreview.png)
 
+### 5.3. Implementació de la Capa Gold (Feature Engineering)
 
+La capa **Gold** és l'etapa final del processament de dades, on transformem les estadístiques acumulades en mètriques de rendiment comparables i significatives per al model d'aprenentatge automàtic (K-Means).
+
+#### 5.3.1. Definició de Mètriques Avançades
+
+Per agrupar els jugadors pel seu **rol tàctic** i no simplement per la seva quantitat de punts o minuts, hem implementat les següents transformacions basades en l'analítica de bàsquet moderna:
+
+#### A. Eficiència i Possessions (Analytics)
+
+Per avaluar el rendiment real, calculem el volum de joc i l'eficiència per possessió, en lloc de per partit:
+* **Possessions:** Estimació de les oportunitats ofensives que finalitza un jugador.
+    * *Fórmula:* $FGA + 0.44 \times FTA + TOV - ORB$
+* **OER (Offensive Efficiency Rating):** Punts anotats per cada possessió gastada. Aquesta mètrica és fonamental per detectar jugadors eficients.
+* **DER Proxy (Defensive Efficiency):** Una aproximació a l'impacte defensiu individual basada en "Stops" (Robatoris + Taps + Rebots Defensius) normalitzats per possessió.
+
+#### B. Perfil de Tir (Shot Chart Analytics)
+
+Aprofitem les dades espacials per definir l'estil de joc:
+* **Distribució Espacial:** Calculem quin percentatge dels tirs del jugador provenen de la zona interior (`pct_interior_usage`) versus l'exterior (`pct_exterior_usage`).
+* **Eficàcia per Zona:** Calculem el percentatge d'encert real (% FG) per a cada macro-zona (Pintura, Mitja distància, Triples de cantonada i Triples frontals). Això ens permetrà diferenciar, per exemple, un pivot dominant sota l'anella (`high eff_paint`) d'un tirador exterior (`high eff_ab3`).
+
+#### C. Normalització (Per 40 Minuts)
+Per eliminar el biaix produït pel temps de joc (un titular fa més punts que un suplent només perquè juga més), totes les mètriques de volum (Punts, Rebots, Assistències) s'han projectat a **40 minuts**.
+
+#### 5.3.2. Implementació i Validació
+
+L'script `enriquimentDades.py` aplica aquestes transformacions i genera el fitxer final `feb_gold_dataset.csv`. Aquest dataset descarta els valors absoluts i conté exclusivament ràtios i mètriques normalitzades, llest per ser ingerit pel model K-Means.
+
+![Execució de l'script d'enriquiment](Imagenes/Part1/ExecucioEnriquiment.png)
+
+Finalment, persistim el resultat al contenidor `03-gold`, tancant així el cicle ETL.
+
+![Validació del fitxer al contenidor Gold](Imagenes/Part1/AzureGoldResults.png)
