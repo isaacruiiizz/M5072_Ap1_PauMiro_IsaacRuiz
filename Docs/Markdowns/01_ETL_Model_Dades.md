@@ -253,3 +253,7 @@ L'script `enriquimentDades.py` aplica aquestes transformacions i genera el fitxe
 Finalment, persistim el resultat al contenidor `03-gold`, tancant així el cicle ETL.
 
 ![Validació del fitxer al contenidor Gold](Imagenes/Part1/AzureGoldResults.png)
+
+Aquí tenim un exemple del fitxer `feb_gold_dataset.csv` amb el datasetd definitiu que utilitzarem pels models.
+
+![Exemple dades dataset final](Imagenes/Part1/GoldContentPreview.png)
