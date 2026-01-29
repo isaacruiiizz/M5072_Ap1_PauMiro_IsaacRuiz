@@ -154,9 +154,9 @@ A la capa Bronze, la granularitat de les dades és "per partit" (1 fila = 1 actu
 
 Per tant, a la capa Silver realitzem una **agregació `GROUP BY`** per:
 1.  **Jugador (`player_feb_id`)**
-2.  **Temporada (`season_name`)**
+2.  **Temporada (`season_id`)**
 
-D'aquesta manera, passem de tenir ~200.000 registres de partits a un dataset de ~15.000 files úniques (una per jugador/temporada), sumant totes les seves estadístiques acumulades.
+D'aquesta manera, passem de tenir ~200.000 registres de partits a un dataset consolidat de ~12.000 files úniques (una per jugador/temporada), sumant totes les seves estadístiques acumulades.
 
 #### 5.2.2. Gestió d'Evolució de l'Esquema (Schema Evolution)
 Un repte detectat és que les diferents temporades de la FEB no sempre tenen les mateixes columnes (per exemple, temporades antigues no registraven els "Taps Rebuts" o `blka`).
@@ -167,7 +167,7 @@ Per solucionar-ho, hem implementat un patró de **"Master Schema"**:
 * Això garanteix que el dataset resultant tingui sempre la mateixa estructura, independentment de l'any de les dades.
 
 #### 5.2.3. Selecció de Variables (Feature Selection)
-De les més de 60 columnes disponibles a l'origen, hem seleccionat les següents per definir el perfil tècnic del jugador, descartant metadades irrellevants (hora del partit, jornades) o mètriques derivades (percentatges) que recalcularem a la capa Gold.
+De les més de 60 columnes disponibles a l'origen, hem seleccionat les següents per definir el perfil tècnic del jugador, descartant metadades irrellevants.
 
 ##### A. Mètriques de Volum i Anotació
 Variables necessàries per determinar la importància del jugador en l'atac.
@@ -180,41 +180,42 @@ Variables que defineixen rols defensius o de creació de joc.
 * **Defensa/Lluita:** `orb` (Rebot Ofensiu), `drb` (Defensiu), `stl` (Robatoris), `blk` (Taps), `pf` (Faltes).
 
 ##### C. Mètriques Espacials (Shot Chart)
-Per diferenciar rols moderns (ex: *Corner Specialist* vs *Rim Runner*), hem extret les dades de localització de tir proporcionades per la FEB (`rc_*`), agrupant-les en zones tàctiques:
-* **Pintura (Paint):** Suma de tirs a zona restringida (`rc_pc`, `rc_pl`, `rc_pr`).
-* **Mitja Distància (Mid-Range):** Suma de tirs a mitja distància (`rc_mel`, `rc_mer`, etc.).
+Per diferenciar rols moderns (ex: *Corner Specialist* vs *Rim Runner*) i calcular la seva eficiència real, hem extret les dades de localització de tir (`rc_*`). Per a cada zona, capturem tant el **volum d'intents** (sufix `_a`) com els **encerts** (sufix `_m`):
+
+* **Pintura (Paint):** Zona restringida (`rc_pc`, `rc_pl`, `rc_pr`).
+* **Mitja Distància (Mid-Range):** Tirs de 4-5 metres (`rc_mel`, `rc_mer`, etc.).
 * **Triples:** Diferenciació entre triples de cantonada (`rc_c3l`, `rc_c3r`) i frontals.
 
 #### 5.2.4. Política de Neteja de Dades (Data Cleaning)
 S'ha aplicat una estratègia defensiva per garantir la qualitat aritmètica de les dades:
 
-1.  **Eliminació d'Orfes:** S'eliminen els registres que no tenen `player_feb_id` o `player_name`, ja que no es poden atribuir a cap entitat.
-2.  **Imputació de Nuls:** Tots els valors nuls (`NaN`) en columnes numèriques es substitueixen per `0`. Assumim que l'absència de dada en una estadística de comptatge equival a que no s'ha produït l'acció.
-3.  **Filtratge de Soroll:** S'eliminen els jugadors amb menys de **50 minuts totals** a la temporada, ja que les seves dades són estadísticament irrellevants i podrien distorsionar els clústers.
+1.  **Eliminació d'Orfes:** S'eliminen els registres que no tenen `player_feb_id` o `player_name`.
+2.  **Imputació de Nuls:** Tots els valors nuls (`NaN`) en columnes numèriques es substitueixen per `0`.
+3.  **Filtratge de Soroll:** S'eliminen els jugadors amb menys de **50 minuts totals** a la temporada, ja que les seves dades són estadísticament irrellevants.
 
 #### 5.2.5. Implementació i Validació de la Càrrega
 
-Per materialitzar l'estratègia definida, hem desenvolupat i executat l'script `transformacioDades.py`. Aquest codi orquestra tot el procés: descarrega les dades de Bronze, aplica la normalització de l'esquema, neteja els nuls i agrega els registres per temporada.
+Per materialitzar l'estratègia definida, hem desenvolupat i executat l'script `transformacioDades.py`. Aquest codi orquestra tot el procés: descarrega les dades de Bronze (utilitzant fitxers temporals per optimitzar la memòria), aplica la normalització, neteja i agrega.
 
 Podeu consultar el codi font complet a l'enllaç següent:
 
 **[Codi Font: transformacioDades.py](../Python/Part1/transformacioDades.py)**
 
 #### A. Execució de l'Script
-En executar el codi, el sistema processa les col·leccions d'estadístiques i tirs. Com es pot veure a la sortida del terminal, el filtre de qualitat actua correctament, reduint el nombre de registres per quedar-nos només amb els jugadors rellevants (>50 minuts).
+En executar el codi, el sistema processa les col·leccions d'estadístiques i tirs. El filtre de qualitat redueix el nombre de registres per quedar-nos només amb els jugadors rellevants.
 
 ![Execució de l'script de transformació](Imagenes/Part1/ExecucioTransformacio.png)
 
 #### B. Persistència al Data Lake
-Un cop finalitzat el procés, verifiquem al Portal d'Azure que el fitxer resultant `feb_silver_dataset.csv` s'ha creat correctament dins del contenidor `02-silver`. Aquest fitxer actua ara com la nostra font de veritat neta.
+Un cop finalitzat el procés, verifiquem al Portal d'Azure que el fitxer resultant `feb_silver_dataset.csv` s'ha creat correctament dins del contenidor `02-silver`.
 
 ![Validació del fitxer al contenidor Silver](Imagenes/Part1/AzureSilverResults.png)
 
 #### C. Auditoria de Dades (Data Quality Check)
 Finalment, realitzem una inspecció del contingut del fitxer generat per validar que s'han complert les regles de negoci:
-1.  **Estructura:** El dataset conté **12.708 files** (jugadors únics per temporada) i **43 columnes** normalitzades.
-2.  **Integritat:** S'ha verificat que **no existeixen valors nuls** (Total Nulls = 0), confirmant que l'estratègia d'imputació ha funcionat.
-3.  **Dades Espacials:** Les columnes de zones de tir (`rc_c3l_a`, `rc_pc_a`, etc.) estan correctament poblades.
+1.  **Estructura:** El dataset conté ~12.700 files i inclou totes les noves columnes d'intents i encerts per zona.
+2.  **Integritat:** S'ha verificat que **no existeixen valors nuls** (Total Nulls = 0).
+3.  **Dades Espacials:** Les columnes de zones de tir (`rc_*_a` i `rc_*_m`) estan correctament poblades.
 
 ![Vista prèvia del dataset Silver net](Imagenes/Part1/SilverContentPreview.png)
 

@@ -1,11 +1,5 @@
-import os
 import pandas as pd
-import numpy as np
-from io import StringIO
-from azure.storage.blob import BlobServiceClient
-from dotenv import load_dotenv
-
-load_dotenv()
+from funcionsAuxiliars import *
 
 # --- CONFIGURACIÓ MESTRA (SCHEMA DEFINITION) ---
 STATS_CONFIG = {
@@ -37,38 +31,25 @@ STATS_CONFIG = {
     'balance': 'sum',
 
     # --- ZONES DE TIR (SHOT CHART) ---
+
+    # PINTURA
     'rc_pc_a': 'sum', 'rc_pl_a': 'sum', 'rc_pr_a': 'sum',
-    'rc_mel_a': 'sum', 'rc_mer_a': 'sum', 'rc_mbl_a': 'sum', 'rc_mbr_a': 'sum',
-    'rc_c3l_a': 'sum', 'rc_c3r_a': 'sum',
-    'rc_ce3l_a': 'sum', 'rc_ce3r_a': 'sum',
-    'rc_e3l_a': 'sum', 'rc_e3r_a': 'sum'
-}
-
-# --- FUNCIONS AUXILIARS ---
-def get_blob_client(container, filename):
-    connect_str = os.getenv('AZURE_CONNECTION_STRING')
-    blob_service_client = BlobServiceClient.from_connection_string(connect_str)
-    return blob_service_client.get_blob_client(container=container, blob=filename)
-
-def read_csv_from_azure(container, filename):
-    print(f"Descarregant '{filename}' de {container}...")
-    try:
-        blob_client = get_blob_client(container, filename)
-        download_stream = blob_client.download_blob()
-        # Afegim low_memory=False per evitar els DtypeWarnings
-        return pd.read_csv(StringIO(download_stream.readall().decode('utf-8')), low_memory=False)
-    except Exception as e:
-        print(f"No s'ha pogut llegir {filename}: {e}")
-        return pd.DataFrame()
-
-def upload_csv_to_azure(df, container, filename):
-    output = StringIO()
-    df.to_csv(output, index=False)
-    print(f"Pujant '{filename}' a {container} ({len(df)} files)...")
+    'rc_pc_m': 'sum', 'rc_pl_m': 'sum', 'rc_pr_m': 'sum',
     
-    blob_client = get_blob_client(container, filename)
-    blob_client.upload_blob(output.getvalue(), overwrite=True)
-    print("Càrrega completada")
+    # MITJA DISTÀNCIA
+    'rc_mel_a': 'sum', 'rc_mer_a': 'sum', 'rc_mbl_a': 'sum', 'rc_mbr_a': 'sum',
+    'rc_mel_m': 'sum', 'rc_mer_m': 'sum', 'rc_mbl_m': 'sum', 'rc_mbr_m': 'sum',
+    
+    # TRIPLES (Cantonada)
+    'rc_c3l_a': 'sum', 'rc_c3r_a': 'sum',
+    'rc_c3l_m': 'sum', 'rc_c3r_m': 'sum',
+    
+    # TRIPLES (Frontal/Altres)
+    'rc_ce3l_a': 'sum', 'rc_ce3r_a': 'sum',
+    'rc_ce3l_m': 'sum', 'rc_ce3r_m': 'sum',
+    'rc_e3l_a': 'sum', 'rc_e3r_a': 'sum',
+    'rc_e3l_m': 'sum', 'rc_e3r_m': 'sum'
+}
 
 # --- LÒGICA DE NEGOCI ---
 
@@ -95,13 +76,11 @@ def process_stats(df):
         print("No hi ha dades estadístiques a processar")
         return pd.DataFrame()
 
-    # CORRECCIÓ: Utilitzem 'season_id' en lloc de 'season_name'
-    # Assegurem que season_id sigui string per evitar problemes (2024 vs "2024")
+    # Assegurem que season_id sigui string
     if 'season_id' in df.columns:
         df['season_id'] = df['season_id'].astype(str)
 
     # 1. Eliminar orfes
-    # Si no tenim ID de jugador o ID de temporada, no podem agrupar
     df = df.dropna(subset=['player_feb_id', 'season_id'])
     
     # 2. Schema Evolution
@@ -113,7 +92,6 @@ def process_stats(df):
     # 4. Agrupació
     agg_rules = {k:v for k,v in STATS_CONFIG.items() if k != 'games_played'}
     
-    # CORRECCIÓ: Agrupem per season_id
     df_grouped = df.groupby(['player_feb_id', 'season_id']).agg(agg_rules).reset_index()
     
     # 5. Comptar partits reals
@@ -133,7 +111,6 @@ def process_shots(df):
         print("No hi ha dades de tirs a processar")
         return pd.DataFrame()
     
-    # CORRECCIÓ: season_id i conversió a string
     if 'season_id' in df.columns:
         df['season_id'] = df['season_id'].astype(str)
         
@@ -153,12 +130,11 @@ def main():
     df_shots_agg = process_shots(df_shots)
 
     if df_stats_clean.empty:
-        print("Error: Dataset d'estadístiques buit després de processar.")
+        print("Error: Dataset d'estadístiques buit.")
         return
 
     # 3. Fusionar (Join)
     print("Fusionant dades")
-    # CORRECCIÓ: Merge per season_id
     df_silver = pd.merge(
         df_stats_clean,
         df_shots_agg,
