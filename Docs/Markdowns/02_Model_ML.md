@@ -22,7 +22,7 @@ S'ha aplicat un **StandardScaler** per normalitzar les escales. Això garanteix 
 ### 2.3. Visualització Pre-Clustering (Justificació)
 Abans d'aplicar l'algorisme, hem observat la distribució de les dades en brut. Com es veu a les gràfiques següents, les dades formen un "núvol" continu on no és obvi on acaba un tipus de jugador i on comença l'altre.
 
-![Distribució inicial sense clústers](Imagenes/Part2/DistribucioPleClustering.png)
+![Distribució inicial sense clústers](Imagenes/Part2/DistribucioPreClustering.png)
 
 ## 3. Determinació del Nombre de Clústers (k)
 Per trobar el nombre òptim de rols ($k$), hem combinat dues mètriques:
