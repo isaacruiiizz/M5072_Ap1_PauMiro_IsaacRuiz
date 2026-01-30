@@ -66,6 +66,24 @@ Un cop analitzades totes les variables del model, hem assignat un nom representa
 | **C_0** | **Tiradors purs** | És el grup que millor representa l'especialització exterior. Tot i que comparteix un alt volum de llançaments de tres amb altres grups, la seva eficàcia des de la cantonada (eff_corner3: 0.31) el defineix com el perfil clàssic de tirador que castiga les ajudes defensives des de l'espai més eficient de la pista. |
 | **C_1** | **Pivots oberts amb tir exterior** | En el context d'un pivot, un 18% d'ús del triple és una xifra molt significativa. No és un tirador pur (que estaria per sobre del 0.40 o 0.50), però és algú que "amenaça" des de fora. Un pivot interior clàssic tindria un valor proper a 0 o 0.05. |
 | **C_2** | **Anotador tot terreny** | Seria el clàssic escorta o aler "penetrador" que força molts tirs lliures perquè no el poden aturar si no és amb falta. |
-| **C_3** | **Guards/bases generador de joc** | Els cervells de l'equip. Lideren en assistències i robatoris de pilota, encarregats de dirigir el joc i controlar el ritme. |
-| **C_?** | **Anotadors tot terreny** | Jugadors amb gran capacitat de generació ofensiva. Assumeixen un gran volum de tirs de camp i són les principals referències en punts. |
-| **C_?** | **Jugadors de rotació i banqueta** | Perfils amb un impacte estadístic mínim (mitjana d'1 punt i 30 minuts totals per temporada). Són jugadors de rol per a moments molt puntuals. |
+| **C_3** | **Guards/bases generador de joc** | El perfil de "Combo Guard". Assumeixen un gran volum de tirs (`fga_p40`) i són els principals assistents de la lliga. |
+| **C_4** | **Pivots defensius** | Perfil clàssic de pintura. Líders en taps i rebots amb nul·la presència al perímetre. |
+| **C_5** | **Jugadors de rotació i banqueta** | Perfils amb un impacte estadístic mínim (mitjana d'1 punt i 30 minuts totals per temporada). Són jugadors de rol per a moments molt puntuals. |
+
+## 6. Comparació amb el model DBSCAN
+
+Tot i que **K-Means** ha demostrat ser eficaç per segmentar la lliga en rols operatius, s'ha realitzat una prova comparativa amb l'algorisme **DBSCAN** (*Density-Based Spatial Clustering of Applications with Noise*).
+
+### 6.1. Resultats del DBSCAN
+
+A diferència del K-Means, el DBSCAN no requereix definir una $k$, sinó que busca zones d'alta densitat de dades. En aplicar-lo al dataset `Gold`:
+* **Agrupament massiu:** El model ha tendit a agrupar la gran majoria de jugadors en un sol "clúster gegant".
+* **Soroll (Outliers):** Ha identificat molts jugadors com a "soroll" (punts aïllats) en lloc de classificar-los en un rol.
+
+![DBSCAN](Imagenes/Part2/DBSCAN.png)
+
+### 6.2. Conclusió de la comparativa
+
+S'ha decidit mantenir **K-Means** com el model principal per les següents raons:
+1.  **Continu estadístic:** En el bàsquet, el talent i els rols són un "continu". No hi ha separacions físiques (buits de densitat) clares entre un pivot obert i un de defensiu; les seves estadístiques sovint se solapen.
+2.  **Objectiu de negoci/esportiu:** El DBSCAN és excel·lent per detectar anomalies (outliers), però per a l'anàlisi tàctica d'una lliga, necessitem que cada jugador tingui un rol assignat, cosa que el K-Means garanteix mitjançant els centroides.
