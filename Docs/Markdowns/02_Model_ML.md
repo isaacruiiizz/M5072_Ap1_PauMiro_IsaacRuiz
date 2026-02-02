@@ -39,7 +39,7 @@ S'ha seleccionat **k=6** com el nombre òptim de clústers per les següents rao
 
 ## 4. Implementació del model final
 
-Un cop determinada la $k=6$, procedim a l'entrenament final de l'algorisme. Hem assignat a cada jugador del dataset `Gold` una etiqueta que representa el seu "Rol Tàctic" a la lliga.
+Un cop determinada la $k=6$, procedim a l'entrenament final de l'algorisme.
 
 ### 4.1. Visualització dels resultats
 
@@ -57,7 +57,7 @@ Per dotar de sentit esportiu als grups matemàtics, analitzem els **centroides**
 
 D'acord amb les dades obtingudes, podem caracteritzar els 6 rols de la següent manera:
 
-### 5.1. Interpretació i Caracterització dels Rols
+#### 5.1.1 Interpretació i Caracterització dels Rols
 
 Un cop analitzades totes les variables del model, hem assignat un nom representatiu a cada clúster basat en el seu perfil estadístic dominant. Aquesta segmentació ens permet identificar 6 tipologies clares de jugadors a les lligues FEB:
 
