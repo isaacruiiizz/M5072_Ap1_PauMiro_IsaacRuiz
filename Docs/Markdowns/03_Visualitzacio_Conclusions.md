@@ -42,9 +42,41 @@ Un dels indicadors més clars de l'èxit del model és la distribució de punts.
 
 ![Perfil d'Anotació](Imagenes/Part3/PerfilAnotacio.png)
 
-### 1.3. Anàlisi Espacial: Validació dels Rols mitjançant Heatmaps
+### 1.3. Caracterització Multidimensional (Radar Chart)
 
-Per confirmar que els clústers identifiquen estils de joc i no només xifres buides, hem creuat el model de ML amb el dataset de més d'1 milió de tirs (`players_shots`). L'objectiu és veure on s'executen les accions de cada grup.
+Com a conclusió de l'anàlisi visual, el gràfic de radar ens permet validar la coherència esportiva dels clústers creats pel model K-Means. Aquesta visualització sintetitza les 5 dimensions clau del joc en una sola "signatura" per cada rol.
+
+#### Conclusions del Perfilatge:
+* **Validació de Rols:** El model ha separat amb èxit els perfils unidimensionals (especialistes en triple o rebot) dels jugadors versàtils.
+* **Eficiència vs. Rol:** S'observa que el **Clúster 3** manté un OER alt tot i l'alt volum de joc, el que els defineix com els jugadors franquícia de la lliga.
+* **Geometria del Joc:** La diferència de formes entre clústers confirma que la $k=6$ no és una divisió arbitrària, sinó que respon a necessitats tàctiques reals de la competició.
+
+![Radar Final](Imagenes/Part3/Radar.png)
+
+# 2. Conclusions Generals del Projecte
+
+El present projecte de *clustering* aplicat a les lligues FEB ha permès transformar un dataset d'alt volum (més de 200.000 registres i un milió d'accions de tir) en una **eina d'intel·ligència esportiva** operativa. Més enllà de l'execució tècnica, s'han assolit els objectius tàctics inicials, permetent una comprensió de la competició basada en el comportament real i no en etiquetes nominals.
+
+### 2.1. Eficàcia del Model i Validació Tècnica
+L'elecció de **K-Means amb $k=6$** s'ha validat com la més robusta per a l'estructura de la lliga. 
+
+* **Comparativa de Models:** Tot i explorar algorismes basats en densitat com el **DBSCAN**, la naturalesa contínua de les estadístiques de bàsquet —on els perfils sovint se solapen— ha fet que la segmentació per centroides del K-Means fos més útil per definir rols tàctics clars. 
+* **Robustesa Visual:** La validació mitjançant **t-SNE** ha confirmat la cohesió dels grups, identificant "illes de talent" especialment definides en els extrems (tiradors purs i pivots defensius).
+
+### 2.2. Descobriments Tàctics Clau
+L'anàlisi ha revelat realitats que sovint queden ocultes en l'estadística tradicional:
+
+* **L'evolució de les posicions clàssiques:** S'ha demostrat que jugadores amb la mateixa posició nominal (ex: Aler-Pivot) es divideixen en realitat entre "Pivots oberts" (C1) i "Anotadors tot terreny" (C2), amb funcions espacials radicalment oposades.
+* **Especialització Negativa:** Els valors nuls en certes zones d'eficiència no s'han interpretat com a falta de qualitat, sinó com una **selecció de tir extrema** que defineix el rol (per exemple, el C0 ignorant la pintura per maximitzar l'*spacing*).
+* **Identificació de la Rotació:** El model ha estat capaç d'aïllar el "soroll" de la banqueta (C5), permetent posar el focus de l'anàlisi en les jugadores que realment determinen el rendiment col·lectiu i l'OER.
+
+### 2.3. Aplicació Pràctica per un club de futbol sala
+Per a un cos tècnic de futbol sala, aquesta eina representa un avantatge competitiu en dos fronts clau:
+
+1. **Scouting de Substitució:** Davant una possible baixa, el model permet trobar **"clons estadístics"** dins de la lliga que garantixin la continuïtat del rol tàctic necessari, minimitzant el risc en la incorporació de noves jugadores.
+2. **Scouting de Rivals:** L'anàlisi de la densitat de clústers en les plantilles rivals permet preveure l'estil de joc de l'oponent (predomini del volum de triple vs. domini de pintura) i dissenyar ajustos defensius basats en evidències i no en percepcions subjectives.
+
+> **Reflexió final:** Aquest flux de treball —des del processament inicial en Azure fins a la visualització avançada— demostra que la **Intel·ligència Artificial** és ja un component indispensable per a l'evolució tàctica i la gestió de talent en el bàsquet FEB actual.
 
 
 

@@ -1,6 +1,6 @@
 # Part 2: Model de machine learning (Clustering)
 
-## Introducció i Objectius
+## 1. Introducció i Objectius
 
 L'objectiu d'aquesta fase és aplicar tècniques d'aprenentatge no supervisat (**Clustering**) sobre el dataset `Gold`. En lloc de dependre de les posicions clàssiques (1-5), busquem descobrir **rols tàctics reals** basats en el comportament estadístic.
 
