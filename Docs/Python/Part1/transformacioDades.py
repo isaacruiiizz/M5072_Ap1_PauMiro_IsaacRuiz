@@ -71,6 +71,7 @@ def clean_data(df, config):
     return df
 
 def process_stats(df):
+    """Processa les estadístiques"""
     print("Processant estadístiques")
     if df.empty: 
         print("No hi ha dades estadístiques a processar")
@@ -106,6 +107,7 @@ def process_stats(df):
     return df_clean
 
 def process_shots(df):
+    """Processa les cartes de tirs"""
     print("Processant carta de tirs")
     if df.empty: 
         print("No hi ha dades de tirs a processar")

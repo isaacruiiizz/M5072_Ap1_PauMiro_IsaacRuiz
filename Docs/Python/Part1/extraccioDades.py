@@ -50,9 +50,11 @@ def main():
         "FEB3_players_shots" 
     ]
     
+    # Filtre per temporada i competició
     query = {"competition_name": {"$regex": "FEB3|EBA", "$options": "i"}}
     projection = {"_id": 0}
 
+    # Bucle per baixar les col·leccions
     for col_name in collections_to_extract:
         print(f"Processant col·lecció: {col_name}...")
         
@@ -60,6 +62,7 @@ def main():
         cursor = collection.find(query, projection)
         df = pd.DataFrame(list(cursor))
 
+        # Validem si la col·lecció està buida
         if df.empty:
             print(f"La col·lecció {col_name} no té dades per aquest filtre o està buida.")
             continue
@@ -71,6 +74,7 @@ def main():
         suffix = col_name.split('_')[-1] 
         file_name = f"feb_raw_{suffix}.csv"
         
+        # Pujem al Azure
         upload_to_azure_bronze(df, file_name)
 
     print("Procés finalitzat per a totes les col·leccions.")

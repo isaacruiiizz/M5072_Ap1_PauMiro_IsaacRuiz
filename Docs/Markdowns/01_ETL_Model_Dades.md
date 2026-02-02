@@ -12,7 +12,7 @@ S'ha configurat el servei `mongodb` al fitxer [docker-compose.yaml](../Docker/do
 * **Mapeig de Ports:** Exposició del port `27017` per permetre la connexió des del nostre entorn de desenvolupament local (Python).
 
 ## 1. Ingesta i Restauració de Dades
-El procés de càrrega inicial de dades (Data Seeding) s'ha realitzat a partir d'un arxiu binari `.archive`. Aquest procés consta de dues fases crítiques:
+El procés de càrrega inicial de dades (Data Seeding) s'ha realitzat a partir d'un arxiu binari `.archive`. Aquest procés consta de dues fases:
 
 **Fase A: Transferència al Contenidor**
 Mitjançant la comanda `docker cp`, hem transferit l'arxiu de còpia de seguretat des del sistema host fins al directori temporal (`/tmp`) dins del contenidor en execució.
@@ -32,7 +32,7 @@ S'ha utilitzat un fitxer [requirements.txt](../Python/requirements.txt) per defi
 
 ![Exemple d'instal·lació de llibreries](Imagenes/Part1/InstalacioLlibreries.png)
 
-**Mòdul de Connexió (Modularització)**
+**Mòdul de Connexió**
 Per evitar la duplicació de codi i millorar la seguretat, hem encapsulat la lògica de connexió en el mòdul [Codi Font: connMongo.py](../Python/Part1/connMongo.py). Aquest script implementa el patró **Singleton** per gestionar la connexió i carrega dinàmicament les variables d'entorn (IP, Port) segons si s'executa en local o via VPN (Tailscale).
 
 A continuació, es mostra la validació de la connexió recuperant els primers registres de la col·lecció d'estadístiques:
@@ -47,7 +47,7 @@ Per tal d'estructurar el flux de dades de manera professional i escalable, hem d
 Hem decidit externalitzar l'emmagatzematge al núvol (Cloud) per diversos motius tècnics:
 
 * **Simulació d'entorn Big Data real:** En la indústria, les dades no es guarden en local, sinó en Data Lakes distribuïts.
-* **Desacoblament (Decoupling):** Separem la *computació* (el nostre script Python local) de l'*emmagatzematge* (Azure). Això permet que es puguin accedir a les mateixes dades processades sense haver d'enviar-se fitxers CSV manualment.
+* **Desacoblament:** Separem la *computació* (el nostre script Python local) de l'*emmagatzematge* (Azure). Això permet que es puguin accedir a les mateixes dades processades sense haver d'enviar-se fitxers CSV manualment.
 * **Traçabilitat:** Podem mantenir l'històric de les dades originals encara que ens equivoquem en el processament posterior.
 
 ### 3.2. Estructura de Capes (The Medallion Architecture)
@@ -70,7 +70,7 @@ El nostre pipeline ETL mou les dades a través de tres contenidors al núvol:
 
 #### Capa GOLD (Business / ML Zone)
 * **Descripció:** Dades enriquides i llestes per alimentar el model de Machine Learning.
-* **Feature Engineering:** En aquesta capa és on apliquem el coneixement de domini (bàsquet) per crear noves mètriques que no existien a l'origen:
+* **Feature Engineering:** En aquesta capa és on apliquem el coneixement de domini (bàsquet) per crear noves mètriques que no existien a l'origen, aquests són alguns exemples:
     * **OER (Offensive Efficiency Rating):** Punts per possessió.
     * **Possessions Estimades:** Fórmula avançada per calcular el volum de joc real.
     * **% Volum de Tirs:** Distribució de tirs (Triples vs Tirs de 2).
@@ -180,7 +180,7 @@ Variables que defineixen rols defensius o de creació de joc.
 * **Defensa/Lluita:** `orb` (Rebot Ofensiu), `drb` (Defensiu), `stl` (Robatoris), `blk` (Taps), `pf` (Faltes).
 
 ##### C. Mètriques Espacials (Shot Chart)
-Per diferenciar rols moderns (ex: *Corner Specialist* vs *Rim Runner*) i calcular la seva eficiència real, hem extret les dades de localització de tir (`rc_*`). Per a cada zona, capturem tant el **volum d'intents** (sufix `_a`) com els **encerts** (sufix `_m`):
+Per diferenciar rols moderns i calcular la seva eficiència real, hem extret les dades de localització de tir (`rc_*`). Per a cada zona, capturem tant el **volum d'intents** (sufix `_a`) com els **encerts** (sufix `_m`):
 
 * **Pintura (Paint):** Zona restringida (`rc_pc`, `rc_pl`, `rc_pr`).
 * **Mitja Distància (Mid-Range):** Tirs de 4-5 metres (`rc_mel`, `rc_mer`, etc.).

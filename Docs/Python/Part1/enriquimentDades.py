@@ -8,7 +8,7 @@ INPUT_FILE = "feb_silver_dataset.csv"
 OUTPUT_CONTAINER = "03-gold"
 OUTPUT_FILE = "feb_gold_dataset.csv"
 
-# --- 2. FUNCIONS DE NETEJA I PREPARACIÓ ---
+# FUNCIONS DE NETEJA I PREPARACIÓ
 def clean_minutes(df):
     """Converteix segons a minuts si cal."""
     if df['minutes'].mean() > 1000:
@@ -38,7 +38,7 @@ def normalize_per_40(df):
             df[f'{col}_p40'] = np.where(df['minutes'] > 0, (df[col] / df['minutes']) * 40, 0)
     return df
 
-# --- 3. FUNCIONS DE CÀLCUL AVANÇAT ---
+# FUNCIONS DE CÀLCUL AVANÇAT
 def calc_efficiency_metrics(df):
     """Calcula Possessions, OER, DER i TS%."""
     print("Calculant eficiència avançada (OER/DER)...")
@@ -96,7 +96,7 @@ def calc_spatial_metrics(df):
     
     return df
 
-# --- 4. PIPELINE PRINCIPAL ---
+# PIPELINE PRINCIPAL
 def feature_engineering_pipeline(df):
     """Orquestra totes les transformacions."""
     df = clean_minutes(df)
